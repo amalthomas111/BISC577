@@ -90,5 +90,7 @@ plot(x[1],y[1],col = "red", pch = 15, xlim=c(0.70,0.75), ylim=c(0.70,0.75),
      main="comparison of models",xlab="R^2 sequence model",ylab="R^2 sequence + shape model")
 points(x[2],y[2], pch= 16, col="blue")
 points(x[3],y[3],pch =17, col="green")
-abline(lm(y~x), col="black",lty=2)
-legend(0.74,0.745,pch=c(15,16,17),c("Mad","Myc","Max"),col=c('red','blue','green'),bty='n')
+#abline(lm(y~x), col="black",lty=2)
+abline(0,1,lty=2)
+legend(0.743,0.745,pch=c(15,16,17),c("Mad","Myc","Max"),col=c('red','blue','green'),bty='n')
+
