@@ -1,4 +1,4 @@
 # BISC577
-Amal Thomas
+# Amal Thomas
 
 For BISC577 HW2
