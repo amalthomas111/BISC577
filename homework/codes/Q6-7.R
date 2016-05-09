@@ -21,7 +21,8 @@ ah = AnnotationHub()
 chipseqdata = ah[['AH28451']]
 seqlevelsStyle(chipseqdata) <- "UCSC"
 #getFasta(chipseqdata, BSgenome = Mmusculus, width = 150, filename = "AH28451.fa")
-getFasta(chipseqdata, BSgenome = Mmusculus, width = 300, filename = "AH28451.fa")
+#getFasta(chipseqdata, BSgenome = Mmusculus, width = 300, filename = "AH28451.fa")
+getFasta(chipseqdata, BSgenome = Mmusculus, width = 400, filename = "AH28451.fa")
 chipseqdata
 
 #### Question 7 ####
