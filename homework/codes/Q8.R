@@ -31,7 +31,7 @@ start_end = data.frame(ctcfPeaks@ranges)[,1:2]
 d=data.frame(ctcfPeaks@seqnames,start_end)
 write(t(d),file="ctcf_cordinates.bed",ncolumns = 3,sep="\t")
 
-###### Using BEDTools to generate random 1000 sequences of lenght 30 nt#########
+###### Using BEDTools to generate random 1000 sequences of length 30 nt#########
 ##sort genome.bed using 
 #sort -k 1,1 -k2,2n genome.bed >sorted_genome.bed
 ##sort ctcf_cordinates.bed using 
