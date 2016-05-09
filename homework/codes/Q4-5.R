@@ -58,16 +58,23 @@ model_max = train(affinity~., data = df_max, trControl=trainControl,
 model_max1 = train(affinity~., data = df_max1, trControl=trainControl, 
                  method = "glmnet", tuneGrid = data.frame(alpha = 0, lambda = c(2^c(-15:15))))
 
-#Coefficient of determeination
+#Coefficient of determination
+model_mad$results
+model_mad1$results
+#rs_mad = mean(model_mad$results$Rsquared,na.rm=T)
+#rs_mad1 = mean(model_mad1$results$Rsquared,na.rm=T)
+rs_mad = max(model_mad$results$Rsquared,na.rm=T)
+rs_mad1 = max(model_mad1$results$Rsquared,na.rm=T)
 
-rs_mad = mean(model_mad$results$Rsquared,na.rm=T)
-rs_mad1 = mean(model_mad1$results$Rsquared,na.rm=T)
- 
-rs_myc = mean(model_myc$results$Rsquared,na.rm=T)
-rs_myc1 = mean(model_myc1$results$Rsquared,na.rm=T)
+model_myc$results
+model_myc1$results
+rs_myc = max(model_myc$results$Rsquared,na.rm=T)
+rs_myc1 = max(model_myc1$results$Rsquared,na.rm=T)
 
-rs_max = mean(model_max$results$Rsquared,na.rm=T)
-rs_max1 = mean(model_max1$results$Rsquared,na.rm=T)
+model_max$results
+model_max1$results
+rs_max = max(model_max$results$Rsquared,na.rm=T)
+rs_max1 = max(model_max1$results$Rsquared,na.rm=T)
 
 print("For mad 1-mer")
 print(rs_mad)
@@ -82,15 +89,28 @@ print(rs_max)
 print("For max 1-mer+shape")
 print(rs_max1)
 
+###Plotting the R^2 values
 x = c(rs_mad,rs_myc,rs_max)
 y = c(rs_mad1,rs_myc1,rs_max1)
 
-#plot(x,y,main="comparison of models",xlab="R^2 sequence model",ylab="R^2 sequence + shape model")#,xlim=c(0.70,0.74), ylim=c(0.70,0.74))
-plot(x[1],y[1],col = "red", pch = 15, xlim=c(0.70,0.75), ylim=c(0.70,0.75),
-     main="comparison of models",xlab="R^2 sequence model",ylab="R^2 sequence + shape model")
+#plot(x,y,main="Comparison of models",xlab="R^2 sequence model",ylab="R^2 sequence + shape model")#,xlim=c(0.70,0.74), ylim=c(0.70,0.74))
+png(file="R^2 sequence model.png")
+plot(x[1],y[1],col = "red", pch = 15, xlim=c(0.70,0.90), ylim=c(0.70,0.90),
+     main="Comparison of models",xlab="R^2 sequence model",ylab="R^2 sequence + shape model")
 points(x[2],y[2], pch= 16, col="blue")
 points(x[3],y[3],pch =17, col="green")
 #abline(lm(y~x), col="black",lty=2)
 abline(0,1,lty=2)
-legend(0.743,0.745,pch=c(15,16,17),c("Mad","Myc","Max"),col=c('red','blue','green'),bty='n')
+legend(0.873,0.875,pch=c(15,16,17),c("Mad","Myc","Max"),col=c('red','blue','green'),bty='n')
+dev.off()
 
+### Question 5 b ####
+#Mann–Whitney–Wilcoxon (MWW) or Wilcoxon rank-sum test
+seq = c(rs_mad,rs_myc,rs_max)
+seq_shape = c(rs_mad1,rs_myc1,rs_max1)
+
+test_data = data.frame(seq,seq_shape)
+test_data1 = t(test_data)
+test_data1
+#Null hypothesis the sequence and sequenc + structure model follow same distribution
+wilcox.test(seq,seq_shape)
