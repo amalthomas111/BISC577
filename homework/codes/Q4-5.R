@@ -112,5 +112,5 @@ seq_shape = c(rs_mad1,rs_myc1,rs_max1)
 test_data = data.frame(seq,seq_shape)
 test_data1 = t(test_data)
 test_data1
-#Null hypothesis the sequence and sequenc + structure model follow same distribution
+#Null hypothesis the sequence and sequence + structure model follow same distribution
 wilcox.test(seq,seq_shape)

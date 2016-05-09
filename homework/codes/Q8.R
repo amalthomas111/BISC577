@@ -24,14 +24,14 @@ chrName <- names(Mmusculus)[1:22]
 chrLength <- seqlengths(Mmusculus)[1:22]
 #create bed file with genome size
 d = data.frame(chrName,chrLength)
-write(t(d),file="genome.txt",ncolumns = 2,sep="\t")
+write(t(d),file="genome.bed",ncolumns = 2,sep="\t")
 
 #create a bed file for ctcf cordinates
 start_end = data.frame(ctcfPeaks@ranges)[,1:2]
 d=data.frame(ctcfPeaks@seqnames,start_end)
-write(t(d),file="ctcf_cordinates.txt",ncolumns = 3,sep="\t")
+write(t(d),file="ctcf_cordinates.bed",ncolumns = 3,sep="\t")
 
-###### bedtools Usage #########
+###### Using BEDTools to generate random 1000 sequences of lenght 30 nt#########
 ##sort genome.bed using 
 #sort -k 1,1 -k2,2n genome.bed >sorted_genome.bed
 ##sort ctcf_cordinates.bed using 
@@ -45,9 +45,10 @@ write(t(d),file="ctcf_cordinates.txt",ncolumns = 3,sep="\t")
 #twoBitToFa mm10.2bit mm10.fa
 ##Extracted the fasta sequences using bedtools getFastaFromBed
 #bedtools getfasta -fi mm10.fa -bed random_cordinates.bed -fo unbound.fa
-################################
+###################################################################################
 
-
+## Merge bound and unbound data
+# Combine two datasets and generate one file
 boundFasta <- readBStringSet("bound.fa")
 boundFasta <- sample(boundFasta, sampleSize)
 unboundFasta <- readBStringSet("unbound.fa")
@@ -78,6 +79,8 @@ model_1 <- train(isBound~ ., data = df_1, trControl = trainControl,
 model_2 <- train(isBound~ ., data = df_2, trControl = trainControl,
                method = "glm", family = binomial, metric ="ROC")
 
+model_1
+model_2
 ## Plot AUROC
 png(file = "AUROC.png")
 prediction1 <- prediction( model_1$pred$Y, model_1$pred$obs )
@@ -100,4 +103,3 @@ auc1
 auc2 <- performance(prediction2, "auc")
 auc2 <- unlist(slot(auc2, "y.values"))
 auc2
-
