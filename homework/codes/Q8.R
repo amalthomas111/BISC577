@@ -9,19 +9,19 @@ library(pROC)
 library(DNAshapeR)
 
 ## Data retreive
-seqLength <- 30
-sampleSize <- 1000
+seqLength = 30
+sampleSize = 1000
 
 # Bound (ChIP-seq)
-ah <- AnnotationHub()
-ctcfPeaks <- ah[["AH28451"]]
-seqlevelsStyle(ctcfPeaks) <- "UCSC"
+ah = AnnotationHub()
+ctcfPeaks = ah[["AH28451"]]
+seqlevelsStyle(ctcfPeaks) = "UCSC"
 #save sequences to fasta file:bound.fa
 getFasta( GR = ctcfPeaks, BSgenome = Mmusculus, width = seqLength, filename = "bound.fa" )
 
 # Unbound (random regions w/o overlapping)
-chrName <- names(Mmusculus)[1:22]
-chrLength <- seqlengths(Mmusculus)[1:22]
+chrName = names(Mmusculus)[1:22]
+chrLength = seqlengths(Mmusculus)[1:22]
 #create bed file with genome size
 d = data.frame(chrName,chrLength)
 write(t(d),file="genome.bed",ncolumns = 2,sep="\t")
@@ -49,46 +49,46 @@ write(t(d),file="ctcf_cordinates.bed",ncolumns = 3,sep="\t")
 
 ## Merge bound and unbound data
 # Combine two datasets and generate one file
-boundFasta <- readBStringSet("bound.fa")
-boundFasta <- sample(boundFasta, sampleSize)
-unboundFasta <- readBStringSet("unbound.fa")
-names(unboundFasta) <- paste0( names(unboundFasta), "_unbound")
-names(unboundFasta) <- paste0( names(unboundFasta), "_unbound")
+boundFasta = readBStringSet("bound.fa")
+boundFasta = sample(boundFasta, sampleSize)
+unboundFasta = readBStringSet("unbound.fa")
+names(unboundFasta) = paste0( names(unboundFasta), "_unbound")
+names(unboundFasta) = paste0( names(unboundFasta), "_unbound")
 writeXStringSet( c(boundFasta, unboundFasta), "ctcf.fa" )
 
 ## DNAshapeR prediction
-shapePred <- getShape("ctcf.fa")
+shapePred = getShape("ctcf.fa")
 ## Encode feature vectors
-featureType_1 <- c("1-mer")
-featureType_2 <- c("1-mer", "1-shape")
-featureVector_1 <- encodeSeqShape("ctcf.fa", shapePred, featureType_1)
-featureVector_2 <- encodeSeqShape("ctcf.fa", shapePred, featureType_2)
+featureType_1 = c("1-mer")
+featureType_2 = c("1-mer", "1-shape")
+featureVector_1 = encodeSeqShape("ctcf.fa", shapePred, featureType_1)
+featureVector_2 = encodeSeqShape("ctcf.fa", shapePred, featureType_2)
 
 ## Linear Regression model 
 ## Data preparation
 bound_status = c(rep("Y", sampleSize), rep("N", sampleSize))
-df_1 <- data.frame(isBound = bound_status, featureVector_1)
-df_2 <- data.frame(isBound = bound_status, featureVector_2)
+df_1 = data.frame(isBound = bound_status, featureVector_1)
+df_2 = data.frame(isBound = bound_status, featureVector_2)
 # Set parameters for Caret
-trainControl <- trainControl(method = "cv", number = 2, savePredictions = TRUE,
+trainControl = trainControl(method = "cv", number = 2, savePredictions = TRUE,
                              classProbs = TRUE)
 # Perform prediction
-model_1 <- train(isBound~ ., data = df_1, trControl = trainControl,
+model_1 = train(isBound~ ., data = df_1, trControl = trainControl,
                method = "glm", family = binomial, metric ="ROC")
 # Perform prediction
-model_2 <- train(isBound~ ., data = df_2, trControl = trainControl,
+model_2 = train(isBound~ ., data = df_2, trControl = trainControl,
                method = "glm", family = binomial, metric ="ROC")
 
 model_1
 model_2
 ## Plot AUROC
 png(file = "AUROC.png")
-prediction1 <- prediction( model_1$pred$Y, model_1$pred$obs )
-performance1 <- performance( prediction1, "tpr", "fpr" )
+prediction1 = prediction( model_1$pred$Y, model_1$pred$obs )
+performance1 = performance( prediction1, "tpr", "fpr" )
 plot(performance1,col="red")
 par(new=TRUE)
-prediction2 <- prediction( model_2$pred$Y, model_2$pred$obs )
-performance2 <- performance( prediction2, "tpr", "fpr" )
+prediction2 = prediction( model_2$pred$Y, model_2$pred$obs )
+performance2 = performance( prediction2, "tpr", "fpr" )
 plot(performance2,col="blue")
 abline(0,1,lty=2)
 legend(0.4,0.4, lty = c(1,1), cex=0.8, c("1-mer", "1-mer+shape"), col=c("red", "Blue"),bty='n')
@@ -96,10 +96,10 @@ title("AUROC")
 dev.off()
 
 ## Caluculate AUC
-auc1 <- performance(prediction1, "auc")
-auc1 <- unlist(slot(auc1, "y.values"))
+auc1 = performance(prediction1, "auc")
+auc1 = unlist(slot(auc1, "y.values"))
 auc1
 
-auc2 <- performance(prediction2, "auc")
-auc2 <- unlist(slot(auc2, "y.values"))
+auc2 = performance(prediction2, "auc")
+auc2 = unlist(slot(auc2, "y.values"))
 auc2
